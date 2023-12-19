@@ -34,6 +34,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: dev
+          
+      - name: Set Buld Path
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo mkdir -p /mnt/build.EmuELEC-Amlogic-ng.aarch64-4
+          sudo chmod 777 /mnt
+          sudo chmod 777 /mnt/build.EmuELEC-Amlogic-ng.aarch64-4
+          ln -s /mnt/build.EmuELEC-Amlogic-ng.aarch64-4 /home/runner/work/EmuELEC/EmuELEC/build.EmuELEC-Amlogic-ng.aarch64-4
+          df -h
+          echo "Compile Process: $(nproc)"
 
       - name: Space cleanup
         env:
@@ -48,14 +59,7 @@ jobs:
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
           df -h
-      - name: Set Buld Path
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          mkdir -p /mnt/build.EmuELEC-Amlogic-ng.aarch64-4
-          ln -s /mnt/build.EmuELEC-Amlogic-ng.aarch64-4 /home/runner/work/EmuELEC/EmuELEC/build.EmuELEC-Amlogic-ng.aarch64-4
-          df -h
-          echo "Compile Process: $(nproc)"
+
       - name: Compile EmuELEC
         run: |
           PROJECT=Amlogic-ce DEVICE=Amlogic-ng ARCH=aarch64 DISTRO=EmuELEC make -j$(nproc) image || make -j1 V=s
